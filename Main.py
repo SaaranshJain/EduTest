@@ -97,13 +97,21 @@ def about() :
 def register() :
     form_reg = RegistrationForm()
     if form_reg.validate_on_submit() :
+        print("Hiiiii")
         flash(f"Account created for {form_reg.name.data}!" , category="success")
         return redirect(url_for("login"))
     return render_template("Register.html" , Title="Register" , form = form_reg)
 
-@app.route("/login")
+@app.route("/login" , methods=['GET' , 'POST'])
 def login() :
     form_log = LoginForm()
+    if form_log.validate_on_submit() :
+        # Dummy success condition
+        if form_log.email.data == "admin@blog.com" and form_log.password.data == "password" :
+            flash("You have been logged in!" , "success")
+            return redirect(url_for("home"))
+        else :
+            flash("Login failed" , "danger")
     return render_template("Login.html" , Title="Login" , form = form_log)
 
 @app.route("/create")
