@@ -1,8 +1,10 @@
 from flask import render_template , url_for , flash , redirect , request
-from FlaskExamApp.Forms import RegistrationForm , LoginForm , CreateSingle , UpdateAccForm , UpdateDelete
+from FlaskExamApp.Forms import (RegistrationForm , LoginForm , CreateSingle , UpdateAccForm ,
+                                UpdateDelete , RequestResetForm , ResetPasswordForm)
 from FlaskExamApp.Models import User , Exam
-from FlaskExamApp import app , db , bcrypt
+from FlaskExamApp import app , db , bcrypt , mail
 from flask_login import login_user , current_user , logout_user , login_required
+from flask_mail import Message
 from datetime import datetime
 import secrets
 import os
@@ -10,8 +12,9 @@ from PIL import Image
 
 @app.route("/1011011100")
 def home() :
-    exams = Exam.query.all()
-    return render_template("Home.html" , posts=exams , Title="Exam Overview" , datetime=datetime , str=str)
+    page = request.args.get("page" , 1 , type=int)
+    exams = Exam.query.order_by(Exam.date_of_exam.asc()).paginate(page=page , per_page=7)
+    return render_template("Home.html" , exams=exams , Title="Exam Overview" , datetime=datetime , str=str)
 
 @app.route("/about")
 @login_required
@@ -138,3 +141,41 @@ def delete_exam(exam_id) :
     db.session.commit()
     flash("The exam has been deleted!!" , category="success")
     return redirect(url_for("home"))
+
+def send_email(user) :
+    token = user.get_reset_token()
+    msg = Message("Password Reset Request" , sender="edtest.noreply@gmail.com" , recipients=[user.email])
+    msg.body = f'''To reset your password, visit the following link :
+    {url_for("reset_password" , token=token , _external=True)}
+    If you did not make this request, then simply ignore this email and nothing will be changed!
+    '''
+    mail.send(msg)
+
+@app.route("/reset_password" , methods=["GET" , "POST"])
+def reset_request() :
+    if current_user.is_authenticated :
+        return redirect(url_for("home"))
+    form_reset = RequestResetForm()
+    if form_reset.validate_on_submit() :
+        user = User.query.filter_by(email=form_reset.email.data).first()
+        send_email(user)
+        flash("An email has been sent with instructions" , category="info")
+        return redirect(url_for("login"))
+    return render_template("Request_Reset.html" , title="Reset Password" , form=form_reset)
+
+@app.route("/reset_password/<token>" , methods=["GET" , "POST"])
+def reset_password(token) :
+    if current_user.is_authenticated :
+        return redirect(url_for("home"))
+    user = User.verify_reset_token(token)
+    if not user :
+        flash("Password reset timed out/invalid. Please try again!" , category="warning")
+        return redirect(url_for("reset_request"))
+    form_reset_new = ResetPasswordForm()
+    if form_reset_new.validate_on_submit() :
+        hashed_pass = bcrypt.generate_password_hash(form_reset_new.password.data).decode("utf-8")
+        user.password = hashed_pass
+        db.session.commit()
+        flash("Your password has been updated!" , category="success")
+        return redirect(url_for("login"))
+    return render_template("Token_Reset.html" , title="Reset Password" , form=form_reset_new)

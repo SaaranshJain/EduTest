@@ -1,17 +1,28 @@
 {% extends "Layout.html" %}
 {% block content %}
-    {% for post in posts %}
-        {% if str(post.date_of_exam) > str(datetime.now())[:10] %}
+    {% for exam in exams.items %}
+        {% if str(exam.date_of_exam) > str(datetime.now())[:10] %}
             <article class="media content-section">
                 <div class="media-body">
                     <div class="article-metadata">
-                        <a class="mr-2">{{ post.subject }}</a>
-                        <small class="text-muted">{{ post.date_of_exam }}</small>
+                        <a class="mr-2">{{ exam.subject }}</a>
+                        <small class="text-muted">{{ exam.date_of_exam }}</small>
                     </div>
-                    <h2><a class="article-title" href="{{ url_for('edit_exam' , exam_id=post.id) }}">{{ post.title }}</a></h2>
-                    <p class="article-content">{{ post.portions }}</p>
+                    <h2><a class="article-title" href="{{ url_for('edit_exam' , exam_id=exam.id) }}">{{ exam.title }}</a></h2>
+                    <p class="article-content">{{ exam.portions }}</p>
                 </div>
             </article>
+        {% endif %}
+    {% endfor %}
+    {% for pagenum in exams.iter_pages(left_edge=1 , right_edge=1 , left_current=1 , right_current=2) %}
+        {% if pagenum %}
+            {% if exams.page == pagenum %}
+                <a class="btn btn-info mb-4" href="{{ url_for('home' , page=pagenum) }}">{{ pagenum }}</a>
+            {% else %}
+                <a class="btn btn-outline-info mb-4" href="{{ url_for('home' , page=pagenum) }}">{{ pagenum }}</a>
+            {% endif %}
+        {% else %}
+              ...  
         {% endif %}
     {% endfor %}
 {% endblock content %}
