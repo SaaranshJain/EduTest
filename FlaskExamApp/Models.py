@@ -18,7 +18,7 @@ class User(db.Model , UserMixin) :
 
 class Exam(db.Model) :
     id = db.Column(db.Integer , primary_key=True)
-    subject = db.Column(db.String , nullable=True)
+    subject = db.Column(db.String , nullable=False)
     title = db.Column(db.String(100) , nullable=False)
     date_of_exam = db.Column(db.DateTime , nullable=False , default=datetime.utcnow)
     portions = db.Column(db.Text , nullable=False)

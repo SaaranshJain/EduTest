@@ -1,25 +1,12 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField , FileAllowed
 from wtforms import StringField , PasswordField , SubmitField , BooleanField , SelectField
-from wtforms.fields.html5 import DateField
+from wtforms.fields.html5 import DateTimeField , DateField
 from wtforms.validators import DataRequired , Length , Email , EqualTo
 from FlaskExamApp.Models import User
 from wtforms.validators import ValidationError
 from flask_login import current_user
-
-subjects = [
-    ("Mathematics" , "Mathematics") , 
-    ("Physics" , "Physics") , 
-    ("Chemistry" , "Chemistry") , 
-    ("English" , "English") , 
-    ("Computer" , "Computer") , 
-    ("Biology" , "Biology") , 
-    ("PE" , "PE") , 
-    ("Entrepreneurship" , "Entrepreneurship") , 
-    ("Psychology" , "Psychology") , 
-    ("Business Studies" , "Business Studies") , 
-    ("Accountancy" , "Accountancy")
-    ]
+from FlaskExamApp.Variables import subjects
 
 classes = [(f"Grade {i}" , f"Grade {i}") for i in range(11 , 13)]
 
@@ -70,3 +57,11 @@ class CreateSingle(FlaskForm) :
     date = DateField("Date of the exam" , validators=[DataRequired()] , format="%Y-%m-%d")
     grade = SelectField(label="Grade" , choices=classes , validators=[DataRequired()])
     submit = SubmitField("Create")
+
+class UpdateDelete(FlaskForm) :
+    subject = SelectField(label="Subject" , choices=subjects , validators=[DataRequired()])
+    title = StringField("Title" , validators=[DataRequired()])
+    date = DateField("Date of the exam" , validators=[DataRequired()] , format="%Y-%m-%d")
+    grade = SelectField(label="Grade" , choices=classes , validators=[DataRequired()])
+    submit = SubmitField("Update")
+    delete = SubmitField("Delete")

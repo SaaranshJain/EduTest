@@ -1,0 +1,15 @@
+{% extends "Layout.html" %}
+{% block content %}
+    {% if str(exam.date_of_exam) > str(datetime.now())[:10] %}
+        <article class="media content-section">
+            <div class="media-body">
+                <div class="article-metadata">
+                    <a class="mr-2" href="#">{{ exam.subject }}</a>
+                    <small class="text-muted">{{ exam.date_of_exam }}</small>
+                </div>
+                <h2 class="article-title">{{ exam.title }}</h2>
+                <p class="article-content">{{ exam.portions }}</p>
+            </div>
+        </article>
+    {% endif %}
+{% endblock content %}

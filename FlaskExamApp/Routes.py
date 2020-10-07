@@ -1,100 +1,24 @@
 from flask import render_template , url_for , flash , redirect , request
-from FlaskExamApp.Forms import RegistrationForm , LoginForm , CreateSingle , UpdateAccForm
+from FlaskExamApp.Forms import RegistrationForm , LoginForm , CreateSingle , UpdateAccForm , UpdateDelete
 from FlaskExamApp.Models import User , Exam
 from FlaskExamApp import app , db , bcrypt
 from flask_login import login_user , current_user , logout_user , login_required
 from datetime import datetime
+import secrets
+import os
+from PIL import Image
 
-exams = [
-    {
-        "subject" : "English",
-        "title" : "Midterm Exam",
-        "portions" : '''Portions :
-
-        01. The Portrait of a Lady
-        02. A Photograph, We're not Afraid to Die....
-        03. Discovering Tut: The Saga Continues
-        04. The Laburnum Top
-        05. Landscape of the soul
-        06. The Voice of the Rain
-        07. The Summer of the Beautiful White Horse
-        08. The Address
-        09. Ranga's Mariage
-        10. Albert Einstein at School
-        11. Integrated grammar
-        12. Formal letters
-        13. Article Writing
-        14. Note making''',
-        "date_of_exam" : "2020-10-07"
-    },
-    {
-        "subject" : "Computer",
-        "title" : "Midterm Exam",
-        "portions" : '''Portions : 
-
-        01. Getting started with python.
-        02. Python fundamentals.
-        03. Data Handling.
-        04. Conditional and iterative statements.
-        05. String Manipulation.
-        06. List Manipulation.
-        07. Tuples.
-        08. Computer system overview
-        09. Data Representation.''',
-        "date_of_exam" : "2020-10-09"
-    },
-    {
-        "subject" : "Math",
-        "title" : "Midterm Exam",
-        "portions" : '''Portions :
-
-        01. Sets
-        02. Relations & Functions
-        03. Trigonometric Functions  
-        04. Complex Numbers & Quadratic Equations
-        05. Linear Inequalities
-        06. Sequences & Series
-        07. Permutations & Combinations''',
-        "date_of_exam" : "2020-10-12"
-    },
-    {
-        "subject" : "Physics",
-        "title" : "Midterm Exam",
-        "portions" : '''Portions :
-
-        02. Units and Measurements 
-        03. Motion in a straight line
-        04. Motion in a plane
-        05. Laws of motion
-        06. Work,Energy and Power
-        07. Motion of system of particles''',
-        "date_of_exam" : "2020-10-17"
-    },
-    {
-        "subject" : "Chemistry",
-        "title" : "Midterm Exam",
-        "portions" : '''Portions :
-
-        01. Some basic concepts in Chemistry
-        02. Structure of atom
-        03. Classification of elements and periodicity in properties
-        04. Chemical bonding
-        05. Thermodynamics
-        06. Chemical Equilibrium
-        07. Hydrogen''',
-        "date_of_exam" : "2020-10-20"
-    }
-]
-
-@app.route("/")
+@app.route("/1011011100")
 def home() :
+    exams = Exam.query.all()
     return render_template("Home.html" , posts=exams , Title="Exam Overview" , datetime=datetime , str=str)
 
 @app.route("/about")
+@login_required
 def about() :
     return render_template("About.html" , Title="About Us")
 
-@app.route("/register" , methods=['GET' , 'POST'])
+@app.route("/1011011100/register" , methods=['GET' , 'POST'])
 def register() :
     if current_user.is_authenticated :
         return redirect(url_for("home"))
@@ -124,30 +48,31 @@ def login() :
             flash("Login failed!!" , "danger")
     return render_template("Login.html" , Title="Login" , form = form_log)
 
-@app.route("/create")
-def createsingle() :
-    form_createsingle = CreateSingle()
-    return render_template("CreateSingle.html" , Title="Create" , form = form_createsingle)
-
-@app.route("/calendar")
-def calendar() :
-    return "Calendar"
-
-@app.route("/createseries")
-def createseries() :
-    return "Series"
-
 @app.route("/logout")
 def logout() :
     logout_user()
     flash("Succesfully logged out!!" , category="success")
     return redirect(url_for("home"))
 
+def savepic(pic) :
+    random_hex = secrets.token_hex(8)
+    _ , f_ext = os.path.splitext(pic.filename)
+    pic_fn = random_hex + f_ext
+    pic_path = os.path.join(app.root_path , "static/Profile_Pics" , pic_fn)
+    i = Image.open(pic)
+    i.thumbnail((125 , 125))
+    i.save(pic_path)
+    return pic_fn
+
+
 @app.route("/account" , methods=['GET' , 'POST'])
 @login_required
 def account() :
     form_acc = UpdateAccForm()
     if form_acc.validate_on_submit() :
+        if form_acc.pic.data :
+            pic_file = savepic(form_acc.pic.data)
+            current_user.image_file = pic_file
         current_user.name = form_acc.name.data
         current_user.email = form_acc.email.data
         db.session.commit()
@@ -158,3 +83,58 @@ def account() :
         form_acc.email.data = current_user.email
     image = url_for("static" , filename="Profile_Pics/" + current_user.image_file)
     return render_template("Account.html" , title="User Profile" , image=image , form=form_acc)
+
+@app.route("/1011011100/create" , methods=["GET" , "POST"])
+@login_required
+def createsingle() :
+    form_createsingle = CreateSingle()
+    if form_createsingle.validate_on_submit() :
+        exam = Exam(subject=form_createsingle.subject.data , title=form_createsingle.title.data , date_of_exam=form_createsingle.date.data , portions="Portions : \n\n" + form_createsingle.title.data)
+        db.session.add(exam)
+        db.session.commit()
+        method_of_upload = "Create"
+        flash("The exam has been created!!" , category="success")
+        return redirect(url_for("home"))
+    return render_template("CreateSingle.html" , Title="Create" , form=form_createsingle , legend="New Post")
+
+@app.route("/calendar")
+@login_required
+def calendar() :
+    return "Calendar"
+
+@app.route("/1011011100/createseries")
+@login_required
+def createseries() :
+    return "Series"
+
+@app.route("/1011011100/exams/<int:exam_id>/update" , methods=["GET" , "POST"])
+@login_required
+def edit_exam(exam_id) :
+    exam = Exam.query.get_or_404(exam_id)
+    form_update = UpdateDelete()
+    if form_update.validate_on_submit() :
+        exam.title = form_update.title.data
+        exam.subject = form_update.subject.data
+        exam.date_of_exam = form_update.date.data
+        method_of_upload = "Update"
+        # exam.portions = form_update.portions.data
+        db.session.commit()
+        flash("The exam has been updated!!" , category="success")
+        return redirect(url_for("home"))
+    elif request.method == "GET" :
+        form_update.title.data = exam.title
+        form_update.subject.data = exam.subject
+        method_of_upload = "Update"
+        form_update.date.data = exam.date_of_exam
+        # form_update.portions.data = exam.portions
+
+    return render_template("UpdateDelete.html" , Title="Update Exam" , form=form_update , legend="Update Exam" , exam=exam)
+
+@app.route("/1011011100/exams/<int:exam_id>/delete" , methods=["POST"])
+@login_required
+def delete_exam(exam_id) :
+    exam = Exam.query.get_or_404(exam_id)
+    db.session.delete(exam)
+    db.session.commit()
+    flash("The exam has been deleted!!" , category="success")
+    return redirect(url_for("home"))
