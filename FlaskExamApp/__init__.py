@@ -24,9 +24,11 @@ def create_app(config_class=Config):
     from FlaskExamApp.users.Routes import users
     from FlaskExamApp.exams.Routes import exams
     from FlaskExamApp.main.Routes import main
+    from FlaskExamApp.errors.Handlers import errors
 
     app.register_blueprint(users)
     app.register_blueprint(exams)
     app.register_blueprint(main)
+    app.register_blueprint(errors)
 
     return app
