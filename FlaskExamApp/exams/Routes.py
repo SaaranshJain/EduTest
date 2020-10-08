@@ -11,7 +11,7 @@ exams = Blueprint("exams" , __name__)
 def createsingle() :
     form_createsingle = CreateSingle()
     if form_createsingle.validate_on_submit() :
-        exam = Exam(subject=form_createsingle.subject.data , title=form_createsingle.title.data , date_of_exam=form_createsingle.date.data , portions="Portions : \n\n" + form_createsingle.title.data)
+        exam = Exam(subject=form_createsingle.subject.data , title=form_createsingle.title.data , date_of_exam=form_createsingle.date.data , start_time=str(form_createsingle.start_time.data) , end_time=str(form_createsingle.end_time.data) , portions="Portions : \n\n" + form_createsingle.title.data)
         db.session.add(exam)
         db.session.commit()
         method_of_upload = "Create"
@@ -56,6 +56,8 @@ def edit_exam(exam_id) :
 @login_required
 def delete_exam(exam_id) :
     exam = Exam.query.get_or_404(exam_id)
+    # db.drop_all()
+    # db.create_all()
     db.session.delete(exam)
     db.session.commit()
     flash("The exam has been deleted!!" , category="success")
