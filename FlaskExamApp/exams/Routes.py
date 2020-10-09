@@ -3,6 +3,7 @@ from FlaskExamApp.exams.Forms import CreateSingle , UpdateDelete
 from FlaskExamApp.Models import Exam
 from FlaskExamApp import db
 from flask_login import login_required
+from datetime import datetime
 
 exams = Blueprint("exams" , __name__)
 
@@ -12,14 +13,17 @@ def createsingle() :
     form_createsingle = CreateSingle()
     if form_createsingle.validate_on_submit() :
         exam = Exam(subject=form_createsingle.subject.data , title=form_createsingle.title.data , date_of_exam=form_createsingle.date.data , start_time=str(form_createsingle.start_time.data) , end_time=str(form_createsingle.end_time.data) , portions="Portions : \n\n" + form_createsingle.title.data)
-        db.session.add(exam)
-        db.session.commit()
-        method_of_upload = "Create"
-        flash("The exam has been created!!" , category="success")
-        return redirect(url_for("main.home"))
+        if str(exam.date_of_exam) < str(datetime.now())[:10] or (str(exam.date_of_exam) < str(datetime.now())[:10] and str(exam.end_time) < str(datetime.now())[11:-7]) :
+            flash("The exam was not created since you need to select a proper date and time" , category="warning")
+        else :
+            db.session.add(exam)
+            db.session.commit()
+            method_of_upload = "Create"
+            flash("The exam has been created!!" , category="success")
+            return redirect(url_for("main.home"))
     return render_template("CreateSingle.html" , Title="Create" , form=form_createsingle , legend="New Exam")
 
-@exams.route("/calendar")
+@exams.route("/1011011100/calendar")
 @login_required
 def calendar() :
     return "Calendar"

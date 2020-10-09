@@ -2,19 +2,17 @@
 {% block content %}
     {% if exams.items != [] %}
         {% for exam in exams.items %}
-            {% if str(exam.date_of_exam) > str(datetime.now())[:10] and str(exam.end_time) > str(datetime.now())[11:-7] %}
-                <article class="media content-section">
-                    <div class="media-body">
-                        <div class="article-metadata">
-                            <a class="mr-2">{{ exam.subject }}</a>
-                            <small class="text-muted">{{ str(exam.date_of_exam)[:10] }}</small>
-                            <small class="text-muted">{{ exam.start_time }}</small>
-                        </div>
-                        <h2><a class="article-title" href="{{ url_for('exams.edit_exam' , exam_id=exam.id) }}">{{ exam.title }}</a></h2>
-                        <p class="article-content">{{ exam.portions }}</p>
+            <article class="media content-section">
+                <div class="media-body">
+                    <div class="article-metadata">
+                        <a class="mr-2">{{ exam.subject }}</a>
+                        <small class="text-muted">{{ str(exam.date_of_exam)[:10] }}</small>
+                        <small class="text-muted">{{ exam.start_time }}</small>
                     </div>
-                </article>
-            {% endif %}
+                    <h2><a class="article-title" href="{{ url_for('exams.edit_exam' , exam_id=exam.id) }}">{{ exam.title }}</a></h2>
+                    <p class="article-content">{{ exam.portions }}</p>
+                </div>
+            </article>
         {% endfor %}
         {% for pagenum in exams.iter_pages(left_edge=1 , right_edge=1 , left_current=1 , right_current=2) %}
             {% if pagenum %}

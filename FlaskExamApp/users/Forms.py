@@ -9,6 +9,7 @@ from flask_login import current_user
 class RegistrationForm(FlaskForm) :
     name = StringField("Student Name" , validators=[DataRequired() , Length(min=2 , max=20)])
     email = StringField("School Email" , validators=[DataRequired() , Email()])
+    kind = SelectField("Student or Teacher" , validators=[DataRequired()] , choices=[("Student" , "Student") , ("Teacher" , "Teacher")])
     password = PasswordField("Password" , validators=[DataRequired()])
     confirm_password = PasswordField("Confirm Password" , validators=[DataRequired() , EqualTo("password")])
     submit = SubmitField("Sign Up")
