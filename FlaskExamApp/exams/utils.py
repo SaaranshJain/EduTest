@@ -177,6 +177,9 @@ def parse_document(full_filename: str) -> list:
         elif group['type'] == 'match':
             group['value'] = SpecialTagParsers.match(group['value'])
 
+        if group['value'] == '':
+            group['value'] = None
+
     return group_list
     # now, the text data can be parsed
 
