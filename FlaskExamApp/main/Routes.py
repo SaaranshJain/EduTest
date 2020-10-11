@@ -18,6 +18,7 @@ def home() :
     page = request.args.get("page" , 1 , type=int)
     exams = Exam.query.order_by(Exam.date_of_exam.asc()).paginate(page=page , per_page=7)
     for exam in exams.items :
+        print(exam.questions)
         if str(exam.date_of_exam) <= str(datetime.now())[:10] or (str(exam.date_of_exam) <= str(datetime.now())[:10] and str(exam.end_time) <= str(datetime.now())[11:-7]) :
             db.session.delete(exam)
             db.session.commit()

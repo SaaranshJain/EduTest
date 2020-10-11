@@ -1,4 +1,21 @@
-subjects = [
+subjects3_5 = [
+    ("II Language") ,
+    ("Mathematics") , 
+    ("Science") , 
+    ("Social Science") , 
+    ("English") , 
+    ("Computer")
+]
+subjects1_2 = [
+    ("II Language") ,
+    ("Mathematics") , 
+    ("Science") , 
+    ("Social Science") , 
+    ("English") , 
+    ("Computer")
+]
+
+subjects11_12 = [
     ("Mathematics" , "Mathematics") , 
     ("Physics" , "Physics") , 
     ("Chemistry" , "Chemistry") , 

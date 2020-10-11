@@ -39,7 +39,9 @@ class Exam(db.Model) :
     date_of_exam = db.Column(db.DateTime , nullable=False , default=datetime.utcnow)
     start_time = db.Column(db.String(2) , nullable=False)
     end_time = db.Column(db.String(2) , nullable=False)
+    duration = db.Column(db.String(2) , nullable=False)
     portions = db.Column(db.Text , nullable=False)
+    questions = db.Column(db.String(120))
 
     def __repr__(self) :
         return f"Exam('{self.title} , {self.date_of_exam} , {self.subject}')"
