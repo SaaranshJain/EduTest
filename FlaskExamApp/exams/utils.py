@@ -180,10 +180,14 @@ def parse_document(full_filename: str) -> list:
         if group['value'] == '':
             group['value'] = None
 
-    return group_list
+    final_list = []
+    for ind in range(0 , len(group_list) , 2) :
+        final_list.append((group_list[ind] , group_list[ind + 1]))
+
+    return final_list
     # now, the text data can be parsed
 
 
 if __name__ == '__main__':
-    data = parse_document('test_template.docx')
+    data = parse_document('C:/Users/Saaransh Jain/Documents/test_temp.txt')
     print(data)
