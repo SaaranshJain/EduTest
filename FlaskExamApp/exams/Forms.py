@@ -3,7 +3,7 @@ from wtforms import StringField , SubmitField , SelectField
 from wtforms.fields.html5 import DateField , IntegerField
 from wtforms.validators import DataRequired
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField
+from flask_wtf.file import FileField , FileAllowed
 from wtforms_components import TimeField
 
 class CreateSingle(FlaskForm) :
@@ -14,7 +14,7 @@ class CreateSingle(FlaskForm) :
     end_time = TimeField("End Time" , validators=[DataRequired()])
     duration = TimeField("Duration of the exam" , validators=[DataRequired()])
     grade = SelectField(label="Grade" , choices=classes , validators=[DataRequired()])
-    questions = FileField("Upload questions template")
+    questions = FileField("Upload questions template" , validators=[FileAllowed(["docx" , "txt"])])
     submit = SubmitField("Create")
 
 class UpdateDelete(FlaskForm) :
@@ -24,7 +24,3 @@ class UpdateDelete(FlaskForm) :
     grade = SelectField(label="Grade" , choices=classes , validators=[DataRequired()])
     submit = SubmitField("Update")
     delete = SubmitField("Delete")
-
-class NumberQuestionForm(FlaskForm) :
-    num_qs = IntegerField("Number of questions" , validators=[DataRequired()])
-    submit = SubmitField("Next")

@@ -1,9 +1,13 @@
 from flask import Blueprint , flash , render_template , redirect , url_for , request
-from FlaskExamApp.exams.Forms import CreateSingle , UpdateDelete , NumberQuestionForm
+from flask import current_app
+from FlaskExamApp.exams.Forms import CreateSingle , UpdateDelete
 from FlaskExamApp.Models import Exam
 from FlaskExamApp import db
 from flask_login import login_required
 from datetime import datetime
+from FlaskExamApp.exams.utils import parse_document
+from werkzeug.utils import secure_filename
+import os
 
 exams = Blueprint("exams" , __name__)
 
@@ -12,8 +16,20 @@ exams = Blueprint("exams" , __name__)
 def createsingle() :
     form_createsingle = CreateSingle()
     if form_createsingle.validate_on_submit() :
-        print(form_createsingle.questions.data)
-        exam = Exam(subject=form_createsingle.subject.data , title=form_createsingle.title.data , date_of_exam=form_createsingle.date.data , start_time=str(form_createsingle.start_time.data) , end_time=str(form_createsingle.end_time.data) , portions="Portions : \n\n" + form_createsingle.title.data , questions=form_createsingle.questions.data , duration=str(form_createsingle.duration.data))
+        f = form_createsingle.questions.data
+        filename = secure_filename(f.filename)
+        f.save(os.path.join(current_app.root_path , "static" , "QuestionsTemplates" , filename))
+        questions = parse_document(os.path.join(current_app.root_path , "static" , "QuestionsTemplates" , filename))
+        exam = Exam(
+            subject=form_createsingle.subject.data , 
+            title=form_createsingle.title.data , 
+            date_of_exam=form_createsingle.date.data , 
+            start_time=str(form_createsingle.start_time.data) , 
+            end_time=str(form_createsingle.end_time.data) , 
+            portions="Portions : \n\n" + form_createsingle.title.data , 
+            questions=questions , 
+            duration=str(form_createsingle.duration.data)
+            )
         if str(exam.date_of_exam) < str(datetime.now())[:10] or (str(exam.date_of_exam) < str(datetime.now())[:10] and str(exam.end_time) < str(datetime.now())[11:-7]) :
             flash("The exam was not created since you need to select a proper date and time" , category="warning")
         else :

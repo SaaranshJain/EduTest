@@ -1,0 +1,35 @@
+<q>What is 1+1 ?
+<mcq>
+#1 2
+#2 4
+#3 I don’t know
+#4 11
+
+<q>What is your name?
+<text>
+
+<q>Prove the Pythagoras theorem
+<image>
+
+<q>Which of the following is/are correct?
+<checkbox>
+#1 1+1=2
+#2 2+2=0
+#3 4+4=8
+#4 Chemistry is a pain
+
+<q>Match the following
+<match>
+[A]
+#1 1+1
+#2 2+2
+#3 3+3
+#4 23*3
+[B]
+#1 6
+#2 2
+#3 69(oo ye)
+#4 4
+
+<q>Write a python program to print hello world
+<code>
