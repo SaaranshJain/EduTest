@@ -1,4 +1,4 @@
-import pprint
+import docx
 from typing import final
 
 GROUP_NAMES = (
@@ -203,7 +203,6 @@ def parse_document(full_filename: str) -> list:
         # final_list.append((group_list[ind] , group_list[ind + 1]))
 
     final_list.pop(0)
-    pprint.pprint(final_list)
         
     return str(final_list)
     # now, the text data can be parsed
