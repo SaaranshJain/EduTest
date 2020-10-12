@@ -184,7 +184,7 @@ def parse_document(full_filename: str) -> list:
     for ind in range(0 , len(group_list) , 2) :
         final_list.append((group_list[ind] , group_list[ind + 1]))
 
-    return final_list
+    return str(final_list)
     # now, the text data can be parsed
 
 
