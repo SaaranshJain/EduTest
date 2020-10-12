@@ -21,6 +21,7 @@ def createsingle() :
         filename = secure_filename(f.filename)
         f.save(os.path.join(current_app.root_path , "static" , "QuestionsTemplates" , filename))
         questions = parse_document(os.path.join(current_app.root_path , "static" , "QuestionsTemplates" , filename))
+        os.remove(os.path.join(current_app.root_path , "static" , "QuestionsTemplates" , filename))
         pprint(questions)
         exam = Exam(
             subject=form_createsingle.subject.data , 
