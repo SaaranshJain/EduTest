@@ -8,6 +8,7 @@ from datetime import datetime
 from FlaskExamApp.exams.utils import parse_document
 from werkzeug.utils import secure_filename
 import os
+from pprint import pprint
 
 exams = Blueprint("exams" , __name__)
 
@@ -20,6 +21,7 @@ def createsingle() :
         filename = secure_filename(f.filename)
         f.save(os.path.join(current_app.root_path , "static" , "QuestionsTemplates" , filename))
         questions = parse_document(os.path.join(current_app.root_path , "static" , "QuestionsTemplates" , filename))
+        pprint(questions)
         exam = Exam(
             subject=form_createsingle.subject.data , 
             title=form_createsingle.title.data , 

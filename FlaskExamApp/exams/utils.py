@@ -1,3 +1,6 @@
+import pprint
+from typing import final
+
 GROUP_NAMES = (
     'plain',
     'q',
@@ -9,6 +12,11 @@ GROUP_NAMES = (
     'code'
 )
 
+EMPTY_TAGS = (
+    'text' ,
+    'image' ,
+    'code'
+)
 
 class SpecialTagParsers():
 
@@ -178,17 +186,28 @@ def parse_document(full_filename: str) -> list:
             group['value'] = SpecialTagParsers.match(group['value'])
 
         if group['value'] == '':
-            group['value'] = None
+                    group['value'] = None
+
+        if group['type'] in EMPTY_TAGS and group['value']:
+            raise ValueError(f"Options not accepted for the field '{group['type']}'")
+
+        
 
     final_list = []
-    for ind in range(0 , len(group_list) , 2) :
-        final_list.append((group_list[ind] , group_list[ind + 1]))
+    temp = []
+    for ind in range(len(group_list)) :
+        if group_list[ind]["type"] == "q" :
+            final_list.append(tuple(temp))
+            temp = []
+        temp.append(group_list[ind])   
+        # final_list.append((group_list[ind] , group_list[ind + 1]))
+
+    final_list.pop(0)
+    pprint.pprint(final_list)
         
     return str(final_list)
-    
     # now, the text data can be parsed
 
 
 if __name__ == '__main__':
     data = parse_document('C:/Users/Saaransh Jain/Documents/test_temp.txt')
-    print(data)
