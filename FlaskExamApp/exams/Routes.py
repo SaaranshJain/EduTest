@@ -40,7 +40,7 @@ def createsingle() :
             db.session.commit()
             method_of_upload = "Create"
             flash("The exam has been created!!" , category="success")
-            return redirect(url_for("main.home"))
+            return redirect(url_for("main.teacher_home"))
     return render_template("CreateSingle.html" , Title="Create" , form=form_createsingle , legend="New Exam")
 
 @exams.route("/1011011100/calendar")
@@ -66,7 +66,7 @@ def edit_exam(exam_id) :
         # exam.portions = form_update.portions.data
         db.session.commit()
         flash("The exam has been updated!!" , category="success")
-        return redirect(url_for("main.home"))
+        return redirect(url_for("main.teacher_home"))
     elif request.method == "GET" :
         form_update.title.data = exam.title
         form_update.subject.data = exam.subject
@@ -85,4 +85,4 @@ def delete_exam(exam_id) :
     db.session.delete(exam)
     db.session.commit()
     flash("The exam has been deleted!!" , category="success")
-    return redirect(url_for("main.home"))
+    return redirect(url_for("main.teacher_home"))

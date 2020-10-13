@@ -9,10 +9,10 @@ main = Blueprint("main" , __name__)
 
 @main.route("/")
 def red() :
-    return redirect(url_for("main.home"))
+    return redirect(url_for("main.teacher_home"))
 
 @main.route("/1011011100")
-def home() :
+def teacher_home() :
     # db.drop_all()
     # db.create_all()
     page = request.args.get("page" , 1 , type=int)
@@ -22,7 +22,7 @@ def home() :
         if str(exam.date_of_exam) <= str(datetime.now())[:10] or (str(exam.date_of_exam) <= str(datetime.now())[:10] and str(exam.end_time) <= str(datetime.now())[11:-7]) :
             db.session.delete(exam)
             db.session.commit()
-    return render_template("Home.html" , exams=exams , Title="Exam Overview" , datetime=datetime , str=str)
+    return render_template("teacher_home.html" , exams=exams , Title="Exam Overview" , datetime=datetime , str=str)
 
 @main.route("/about")
 @login_required

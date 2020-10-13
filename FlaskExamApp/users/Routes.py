@@ -10,7 +10,7 @@ users = Blueprint("users" , __name__)
 @users.route("/1011011100/register" , methods=['GET' , 'POST'])
 def register() :
     if current_user.is_authenticated :
-        return redirect(url_for("main.home"))
+        return redirect(url_for("main.teacher_home"))
     form_reg = RegistrationForm()
     if form_reg.validate_on_submit() :
         hashed_pass = bcrypt.generate_password_hash(form_reg.password.data).decode("utf-8")
@@ -24,7 +24,7 @@ def register() :
 @users.route("/login" , methods=['GET' , 'POST'])
 def login() :
     if current_user.is_authenticated :
-        return redirect(url_for("main.home"))
+        return redirect(url_for("main.teacher_home"))
     form_log = LoginForm()
     if form_log.validate_on_submit() :
         user = User.query.filter_by(email=form_log.email.data).first()
@@ -32,7 +32,7 @@ def login() :
             login_user(user , remember=form_log.remember.data)
             next_page = request.args.get("next")
             flash("Login successful!!" , "success")
-            return redirect(next_page) if next_page else redirect(url_for("main.home"))
+            return redirect(next_page) if next_page else redirect(url_for("main.teacher_home"))
         else :
             flash("Login failed!!" , "danger")
     return render_template("Login.html" , Title="Login" , form = form_log)
@@ -42,7 +42,7 @@ def login() :
 def logout() :
     logout_user()
     flash("Succesfully logged out!!" , category="success")
-    return redirect(url_for("main.home"))
+    return redirect(url_for("main.teacher_home"))
 
 @users.route("/account" , methods=['GET' , 'POST'])
 @login_required
@@ -66,7 +66,7 @@ def account() :
 @users.route("/reset_password" , methods=["GET" , "POST"])
 def reset_request() :
     if current_user.is_authenticated :
-        return redirect(url_for("main.home"))
+        return redirect(url_for("main.teacher_home"))
     form_reset = RequestResetForm()
     if form_reset.validate_on_submit() :
         user = User.query.filter_by(email=form_reset.email.data).first()
@@ -78,7 +78,7 @@ def reset_request() :
 @users.route("/reset_password/<token>" , methods=["GET" , "POST"])
 def reset_password(token) :
     if current_user.is_authenticated :
-        return redirect(url_for("main.home"))
+        return redirect(url_for("main.teacher_home"))
     user = User.verify_reset_token(token)
     if not user :
         flash("Password reset timed out/invalid. Please try again!" , category="warning")
