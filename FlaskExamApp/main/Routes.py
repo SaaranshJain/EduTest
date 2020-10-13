@@ -1,17 +1,18 @@
 from flask import Blueprint , redirect , url_for , render_template , request
 from FlaskExamApp.Models import Exam
 from datetime import datetime
-from flask_login import login_required
-from flask import flash
+from flask_login import login_required , current_user
 from FlaskExamApp import db
 
 main = Blueprint("main" , __name__)
 
 @main.route("/")
+@login_required
 def red() :
     return redirect(url_for("main.teacher_home"))
 
 @main.route("/1011011100")
+@login_required
 def teacher_home() :
     # db.drop_all()
     # db.create_all()
