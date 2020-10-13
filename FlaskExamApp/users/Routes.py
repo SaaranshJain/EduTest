@@ -4,6 +4,7 @@ from FlaskExamApp import db , bcrypt
 from FlaskExamApp.Models import User
 from FlaskExamApp.users.Forms import RegistrationForm , RequestResetForm , ResetPasswordForm , LoginForm , UpdateAccForm
 from FlaskExamApp.users.utils import savepic , send_email
+from FlaskExamApp.main.Routes import student_role , teacher_role , head_role
 
 users = Blueprint("users" , __name__)
 
@@ -15,6 +16,10 @@ def register() :
     if form_reg.validate_on_submit() :
         hashed_pass = bcrypt.generate_password_hash(form_reg.password.data).decode("utf-8")
         user = User(name=form_reg.name.data , email=form_reg.email.data , password=hashed_pass , kind=form_reg.kind.data)
+        if form_reg.kind.data == "Student" :
+            user.roles = [student_role , ]
+        else :
+            user.roles = [teacher_role , ]
         db.session.add(user)
         db.session.commit()
         flash(f"Account created for {form_reg.name.data}!" , category="success")

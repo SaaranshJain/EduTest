@@ -3,12 +3,18 @@ from FlaskExamApp.Models import Exam
 from datetime import datetime
 from flask_login import login_required , current_user
 from FlaskExamApp import db
+from FlaskExamApp.Models import Role
 
 main = Blueprint("main" , __name__)
+
+head_role = Role(name="Head")
+teacher_role = Role(name="Teacher")
+student_role = Role(name="Student")
 
 @main.route("/")
 @login_required
 def red() :
+    db.session.commit()
     return redirect(url_for("main.teacher_home"))
 
 @main.route("/1011011100")
