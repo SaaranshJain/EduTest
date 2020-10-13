@@ -3,6 +3,7 @@ bcrypt==3.2.0
 blinker==1.4
 cffi==1.14.3
 click==7.1.2
+cryptography==3.1.1
 decorator==4.4.2
 dnspython==2.0.0
 email-validator==1.1.1
@@ -14,6 +15,7 @@ Flask-Mail==0.9.1
 Flask-Principal==0.4.0
 Flask-Security==3.0.0
 Flask-SQLAlchemy==2.4.4
+Flask-User==1.0.2.2
 Flask-WTF==0.14.3
 idna==2.10
 infinity==1.5
