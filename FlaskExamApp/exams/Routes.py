@@ -9,13 +9,11 @@ from FlaskExamApp.exams.utils import parse_document
 from werkzeug.utils import secure_filename
 import os
 from pprint import pprint
-from flask_user import roles_required
 
 exams = Blueprint("exams" , __name__)
 
 @exams.route("/1011011100/create" , methods=["GET" , "POST"])
 @login_required
-@roles_required(['Teacher' , 'Head'])
 def createsingle() :
     form_createsingle = CreateSingle()
     if form_createsingle.validate_on_submit() :

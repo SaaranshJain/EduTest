@@ -1,15 +1,10 @@
 from flask import Blueprint , redirect , url_for , render_template , request
 from FlaskExamApp.Models import Exam
 from datetime import datetime
-from flask_login import login_required , current_user
+from flask_login import login_required
 from FlaskExamApp import db
-from FlaskExamApp.Models import Role
 
 main = Blueprint("main" , __name__)
-
-head_role = Role(name="Head")
-teacher_role = Role(name="Teacher")
-student_role = Role(name="Student")
 
 @main.route("/")
 @login_required
