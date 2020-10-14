@@ -1,4 +1,4 @@
-{% extends "Layout.html" %}
+{% extends "NoSideLay.html" %}
 {% block content %}
     {% if exams.items != [] %}
         {% for exam in exams.items %}
@@ -26,6 +26,6 @@
             {% endif %}
         {% endfor %}
     {% else %}
-        <h2>No exams created yet</h2>
+        <h2>No exams for you yet</h2>
     {% endif %}
 {% endblock content %}

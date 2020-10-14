@@ -2,8 +2,10 @@ import secrets
 import os
 from PIL import Image
 from flask_mail import Message
-from flask import url_for , current_app
+from flask import url_for , current_app , redirect , flash
+from flask_login import current_user
 from FlaskExamApp import mail
+from functools import wraps
 
 def savepic(pic) :
     random_hex = secrets.token_hex(8)
@@ -23,3 +25,13 @@ def send_email(user) :
     If you did not make this request, then simply ignore this email and nothing will be changed!
     '''
     mail.send(msg)
+
+def locked(func) :
+    def inner_dec(*args , **kwargs) :
+        if current_user.kind == "Teacher" :
+            return func(*args , **kwargs)
+        flash('''Oops! Looks like you don't have teacher level access.
+        If you are the teacher, then contact your administrator.''' , category="warning")
+        return redirect(url_for("main.red"))
+    inner_dec.__name__ = func.__name__
+    return inner_dec

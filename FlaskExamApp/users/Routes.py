@@ -24,7 +24,7 @@ def register() :
 @users.route("/login" , methods=['GET' , 'POST'])
 def login() :
     if current_user.is_authenticated :
-        return redirect(url_for("main.teacher_home"))
+        return redirect(url_for("main.red"))
     form_log = LoginForm()
     if form_log.validate_on_submit() :
         user = User.query.filter_by(email=form_log.email.data).first()
@@ -32,7 +32,7 @@ def login() :
             login_user(user , remember=form_log.remember.data)
             next_page = request.args.get("next")
             flash("Login successful!!" , "success")
-            return redirect(next_page) if next_page else redirect(url_for("main.teacher_home"))
+            return redirect(next_page) if next_page else redirect(url_for("main.red"))
         else :
             flash("Login failed!!" , "danger")
     return render_template("Login.html" , Title="Login" , form = form_log)
@@ -61,7 +61,9 @@ def account() :
         form_acc.name.data = current_user.name
         form_acc.email.data = current_user.email
     image = url_for("static" , filename="Profile_Pics/" + current_user.image_file)
-    return render_template("Account.html" , title="User Profile" , image=image , form=form_acc)
+    if current_user.kind == "Teacher" :
+        return render_template("Account.html" , title="User Profile" , image=image , form=form_acc)
+    return render_template("Student_Account.html" , title="User Profile" , image=image , form=form_acc)
 
 @users.route("/reset_password" , methods=["GET" , "POST"])
 def reset_request() :

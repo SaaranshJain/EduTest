@@ -9,10 +9,12 @@ from FlaskExamApp.exams.utils import parse_document
 from werkzeug.utils import secure_filename
 import os
 from pprint import pprint
+from FlaskExamApp.users.utils import locked
 
 exams = Blueprint("exams" , __name__)
 
 @exams.route("/1011011100/create" , methods=["GET" , "POST"])
+@locked
 @login_required
 def createsingle() :
     form_createsingle = CreateSingle()
@@ -44,16 +46,19 @@ def createsingle() :
     return render_template("CreateSingle.html" , Title="Create" , form=form_createsingle , legend="New Exam")
 
 @exams.route("/1011011100/calendar")
+@locked
 @login_required
 def calendar() :
     return "Calendar"
 
 @exams.route("/1011011100/createseries")
+@locked
 @login_required
 def createseries() :
     return "Series"
 
 @exams.route("/1011011100/exams/<int:exam_id>/update" , methods=["GET" , "POST"])
+@locked
 @login_required
 def edit_exam(exam_id) :
     exam = Exam.query.get_or_404(exam_id)
@@ -77,6 +82,7 @@ def edit_exam(exam_id) :
     return render_template("UpdateDelete.html" , Title="Update Exam" , form=form_update , legend="Update Exam" , exam=exam)
 
 @exams.route("/1011011100/exams/<int:exam_id>/delete" , methods=["POST"])
+@locked
 @login_required
 def delete_exam(exam_id) :
     exam = Exam.query.get_or_404(exam_id)
