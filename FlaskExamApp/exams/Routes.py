@@ -10,6 +10,7 @@ from werkzeug.utils import secure_filename
 import os
 from pprint import pprint
 from FlaskExamApp.users.utils import locked
+from FlaskExamApp.Variables import dict_of_randoms
 
 exams = Blueprint("exams" , __name__)
 
@@ -92,3 +93,8 @@ def delete_exam(exam_id) :
     db.session.commit()
     flash("The exam has been deleted!!" , category="success")
     return redirect(url_for("main.teacher_home"))
+
+@exams.route("/1101111010/attempt_exam/<int:dict_of_randoms.get(exam_id , 1010101010)>" , methods=["POST" , "GET"])
+@login_required
+def attempt_exam(exam_id) :
+    exam = Exam.query.get_or_404(exam_id)
